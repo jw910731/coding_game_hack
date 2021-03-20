@@ -1,3 +1,4 @@
+#pragma once
 #include <stdint.h>
 
 class Maze
@@ -11,10 +12,12 @@ public:
     };
 #pragma endregion
 #pragma region methods
-    static Maze *GetInstance(uint32_t x, uint32_t y);
+    static Maze *GetInstance(const uint32_t x, const uint32_t y);
     static Maze *GetInstance();
 
-    bool Place(uint32_t wx, uint32_t wy, MazeStatus it);
+    bool Place(const uint32_t wx, const uint32_t wy, const MazeStatus it);
+    bool Walkable(const uint32_t wx, const uint32_t wy);
+    void PrintAtLoc(const int x, const int y);
     ~Maze();
 #pragma endregion
 private:
@@ -25,10 +28,10 @@ private:
     MazeStatus **_mazeMap = nullptr;
 #pragma endregion
 #pragma region methods
-    Maze(uint32_t x, uint32_t y);
+    Maze(const uint32_t x, const uint32_t y);
     Maze();
 
-    void initMap(uint32_t x, uint32_t y);
+    void initMap(const uint32_t x, const uint32_t y);
     void removeMap();
 #pragma endregion
 };

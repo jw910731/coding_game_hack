@@ -1,31 +1,41 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "detour.h"
+#include "robot.h"
+#include "maze.h"
+#include "mapAdapter.h"
+#include <iostream>
 
-int func(int a, int b)
+int main()
 {
-    printf("calling to func\n");
-    return a+b;
-}
-typedef int (*funcptr)(int a, int b); 
+    int x, y;
+    int step;
+    std::cin >> x >> y;
+    std::cin >> step;
 
-funcptr fptr;
+    auto maze = Maze::GetInstance(x, y);
+    CDGMapAdapter maze_parser;
+    maze_parser.Init(maze);
 
-int hook(int a, int b)
-{
-    printf("hook~~\n");
-    if (fptr == 0)
-    {
-        printf("not write...?\n");
-        return -1;
-    }
-    int r = fptr(a, b);
-    return a*b+r;
-}
 
-int main(int ac,char**av)
-{
-    detour_func((uint64_t)func, 12, (uint64_t)hook, (uint64_t*)(&fptr));
-    printf("res:%d\n", func(1,2));
+    char **map = new char*[y];
+    for (auto i = 0; i != y; ++i)
+        map[i] = new char[x];
+
+    for (auto i = 0 ; i != y ; ++i)
+        std::cin >> map[i];
+    if (!maze_parser.Consume(map, x, y))
+        throw "Consume failure";
+    CDGRobot robot;
+    auto stp = maze_parser.StartPoint();
+    robot.Init(stp.first, stp.second, step, maze);
+    for (auto _ = 0 ; _ != step ; ++_)
+        robot.Walk();
+    
+    auto pos = robot.GetPos();
+    std::cout << pos.first << ' ' << pos.second << '\n';
+
+    for (auto i = 0; i != y; ++i)
+        delete [] map[i];
+    delete [] map;
+    
+    return 0;
+
 }

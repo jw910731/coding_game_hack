@@ -1,3 +1,4 @@
+#pragma once
 #include <unistd.h>
 #include <stdint.h>
 #include <sys/mman.h>
