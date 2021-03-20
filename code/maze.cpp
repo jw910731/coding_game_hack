@@ -1,10 +1,10 @@
 #include "maze.h"
-#include <memory.h>
 #include <iostream>
+#include <memory.h>
 
 Maze* Maze::_instatnce = nullptr;
 
-Maze::Maze(){}
+Maze::Maze() { }
 
 Maze::~Maze()
 {
@@ -12,14 +12,13 @@ Maze::~Maze()
     this->_instatnce = nullptr;
 }
 
-void Maze::initMap(const uint32_t x,const uint32_t y)
+void Maze::initMap(const uint32_t x, const uint32_t y)
 {
     this->_x = x;
     this->_y = y;
-    
-    this->_mazeMap = new MazeStatus *[this->_y];
-    for (auto i = 0; i < this->_y; i++)
-    {
+
+    this->_mazeMap = new MazeStatus*[this->_y];
+    for (auto i = 0; i < this->_y; i++) {
         _mazeMap[i] = new MazeStatus[this->_x];
         for (auto j = 0; j < this->_x; j++)
             _mazeMap[i][j] = MazeStatus::empty;
@@ -30,10 +29,10 @@ void Maze::removeMap()
 {
     if (this->_mazeMap == nullptr)
         return;
-    
+
     for (auto i = 0; i < this->_y; i++)
-        delete [] _mazeMap[i];
-    delete [] _mazeMap;
+        delete[] _mazeMap[i];
+    delete[] _mazeMap;
     _mazeMap = nullptr;
     this->_x = 0;
     this->_y = 0;
@@ -43,7 +42,7 @@ Maze* Maze::GetInstance()
 {
     if (_instatnce == nullptr)
         _instatnce = new Maze();
-    
+
     return _instatnce;
 }
 
@@ -71,28 +70,26 @@ bool Maze::Walkable(const uint32_t wx, const uint32_t wy)
         return false;
     if (_mazeMap[wy][wx] == MazeStatus::wall)
         return false;
-    
+
     return true;
 }
 void Maze::PrintAtLoc(const int x, const int y)
 {
     for (int i = 0; i != this->_y; ++i, std::cerr << '\n')
-        for (int j = 0; j != this->_x; ++j)
-        {
-            switch (this->_mazeMap[i][j])
-            {
-                case MazeStatus::wall:
-                    std::cerr << '#';
-                    break;
-                case MazeStatus::empty:
-                    if (i == y && j == x)
-                        std::cerr << 'O';
-                    else
-                        std::cerr << '.';
-                    break;
-                default:
-                    throw "unexcpeted character "+this->_mazeMap[i][j];
-                    break;
+        for (int j = 0; j != this->_x; ++j) {
+            switch (this->_mazeMap[i][j]) {
+            case MazeStatus::wall:
+                std::cerr << '#';
+                break;
+            case MazeStatus::empty:
+                if (i == y && j == x)
+                    std::cerr << 'O';
+                else
+                    std::cerr << '.';
+                break;
+            default:
+                throw "unexcpeted character " + this->_mazeMap[i][j];
+                break;
             }
         }
 }

@@ -1,13 +1,10 @@
 #include "mapAdapter.h"
 #include "errors.h"
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 
 #pragma region interface
-bool IMapAdapter::Init(Maze* const src)
-{
-    throw NotImplementedError();
-}
+bool           IMapAdapter::Init(Maze* const src) { throw NotImplementedError(); }
 
 bool IMapAdapter::Consume(void* const input, const uint32_t x, const uint32_t y)
 {
@@ -15,16 +12,16 @@ bool IMapAdapter::Consume(void* const input, const uint32_t x, const uint32_t y)
 }
 #pragma endregion
 #pragma region coding_game_adapter
-CDGMapAdapter::CDGMapAdapter(){}
+CDGMapAdapter::CDGMapAdapter()
+{
+}
 CDGMapAdapter::~CDGMapAdapter()
 {
-    if (this->_startPoint != nullptr)
-    {
-        delete [] this->_startPoint;
+    if (this->_startPoint != nullptr) {
+        delete[] this->_startPoint;
         this->_startPoint = nullptr;
     }
-    if (this->_maze != nullptr)
-    {
+    if (this->_maze != nullptr) {
         this->_maze = nullptr;
     }
 }
@@ -39,46 +36,43 @@ bool CDGMapAdapter::Init(Maze* const src)
 
 bool CDGMapAdapter::Consume(void* const input, const uint32_t x, const uint32_t y)
 {
-    #ifdef DEBUG
+#ifdef DEBUG
     std::cerr << "[start]\n";
-    #endif
+#endif
 
-    for (auto i = 0; i < y; ++i)
-    {
-        for (auto j = 0; j < x; ++j)
-        {
+    for (auto i = 0; i < y; ++i) {
+        for (auto j = 0; j < x; ++j) {
             auto c = ((char** const)input)[i][j];
-            
-            #ifdef DEBUG
+
+#ifdef DEBUG
             std::cerr << c;
             std::cerr.flush();
-            #endif
+#endif
 
-            switch (c)
-            {
-                case '.':
+            switch (c) {
+            case '.':
+                break;
+            case '#':
+                if (this->_maze->Place(j, i, Maze::wall))
                     break;
-                case '#':
-                    if (this->_maze->Place(j, i, Maze::wall))
-                        break;
-                    return false;
-                case 'O':
-                    this->_startPoint = new std::pair<uint32_t, uint32_t>(j, i);
-                    break;
-                default:
-                    std::string s = "unexpected char ";
-                    s+=c;
-                    throw std::range_error(s);
+                return false;
+            case 'O':
+                this->_startPoint = new std::pair<uint32_t, uint32_t>(j, i);
+                break;
+            default:
+                std::string s = "unexpected char ";
+                s += c;
+                throw std::range_error(s);
             }
         }
-        #ifdef DEBUG
+#ifdef DEBUG
         std::cerr << '\n'
-        #endif
+#endif
     }
-    #ifdef DEBUG
+#ifdef DEBUG
     std::cerr << "[end]\n";
     std::cerr.flush();
-    #endif
+#endif
 
     return true;
 }

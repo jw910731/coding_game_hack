@@ -1,0 +1,8 @@
+---
+BasedOnStyle: WebKit
+BreakBeforeBraces: Stroustrup
+AlignConsecutiveMacros: 'true'
+AlignConsecutiveAssignments: 'true'
+AlignConsecutiveDeclarations: 'true'
+AlignTrailingComments: 'true'
+...

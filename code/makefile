@@ -4,7 +4,6 @@ OBJS = $(shell ls *.cpp|sed --expression='s/.cpp/.o/g')
 EXE = exe_bin
 NOSTRIP = 0
 
-
 ifeq ("$(DEBUG)","1")
 	CCFLAGS += -g -DDEBUG
 	NOSTRIP = 1
@@ -14,6 +13,7 @@ endif
 	$(CC) $(CCFLAGS) -c -o $@ $<
 
 all:$(OBJS)
+	clang-format -i $(shell ls *.cpp) $(shell ls *.h)
 	$(CC) $(OBJS) -o $(EXE)
 	if [ "$(NOSTRIP)" = "0" ]; then \
 		strip $(EXE); \
