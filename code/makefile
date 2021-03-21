@@ -13,7 +13,6 @@ endif
 	$(CC) $(CCFLAGS) -c -o $@ $<
 
 all:$(OBJS)
-	clang-format -i $(shell ls *.cpp) $(shell ls *.h)
 	$(CC) $(OBJS) -o $(EXE)
 	if [ "$(NOSTRIP)" = "0" ]; then \
 		strip $(EXE); \
