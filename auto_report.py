@@ -1,6 +1,7 @@
 import subprocess
 from os.path import exists
 import docx
+import json
 from docx.text.font import Font
 from docx.shared import Cm, Pt
 
@@ -49,9 +50,19 @@ def write_body(doc, lines: list, style: Font):
             run.font.size = style.size
 
 
+def get_header_string():
+    res = []
+    authors: dict = json.loads(open("authors.json", "r").read())
+    for n in authors["member"]:
+        res.append(
+            f"TPP2020-HW{authors['hw']}-{n['id']}{n['name']}")
+    return res
+
+
 def scan_file(fn: str) -> list:
     lines = [
-        "", "/* -------------------------------------------------------------",
+        "",
+        "/* -------------------------------------------------------------",
         f"// {fn}",
         "// ----------------------------------------------------------- */"
     ]
@@ -61,16 +72,18 @@ def scan_file(fn: str) -> list:
 
 
 if __name__ == "__main__":
+    branch = subprocess.check_output(
+        ['git', 'rev-parse', '--abbrev-ref',
+         'HEAD']).decode().strip()
     target_code_files = subprocess.check_output(
-        ['git', 'ls-tree', '-r', 'master',
+        ['git', 'ls-tree', '-r', branch,
          '--name-only']).decode().splitlines()
     doc = docx.Document('tcc_template.docx')
     hs = get_header_style(doc)
     hs.size = Pt(10)
 
     bs = get_body_style(doc)
-    bs.size = Pt(6)
-    write_header(doc, ["test001", "test002", "物品"], hs)
+    write_header(doc, get_header_string(), hs)
 
     clear_body(doc)
     for file in target_code_files:

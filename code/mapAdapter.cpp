@@ -1,20 +1,24 @@
 #include "mapAdapter.h"
-#include "errors.h"
 #include <iostream>
 #include <stdexcept>
+#include "errors.h"
 
 #pragma region interface
-bool           IMapAdapter::Init(Maze* const src) { throw NotImplementedError(); }
+bool IMapAdapter::Init(Maze *const src)
+{
+    throw NotImplementedError();
+}
 
-bool IMapAdapter::Consume(void* const input, const uint32_t x, const uint32_t y)
+bool IMapAdapter::Consume(
+    void *const input,
+    const uint32_t x,
+    const uint32_t y)
 {
     throw NotImplementedError();
 }
 #pragma endregion
 #pragma region coding_game_adapter
-CDGMapAdapter::CDGMapAdapter()
-{
-}
+CDGMapAdapter::CDGMapAdapter() {}
 CDGMapAdapter::~CDGMapAdapter()
 {
     if (this->_startPoint != nullptr) {
@@ -26,7 +30,7 @@ CDGMapAdapter::~CDGMapAdapter()
     }
 }
 
-bool CDGMapAdapter::Init(Maze* const src)
+bool CDGMapAdapter::Init(Maze *const src)
 {
     if (src == nullptr)
         return false;
@@ -34,7 +38,10 @@ bool CDGMapAdapter::Init(Maze* const src)
     return true;
 }
 
-bool CDGMapAdapter::Consume(void* const input, const uint32_t x, const uint32_t y)
+bool CDGMapAdapter::Consume(
+    void *const input,
+    const uint32_t x,
+    const uint32_t y)
 {
 #ifdef DEBUG
     std::cerr << "[start]\n";
@@ -42,7 +49,7 @@ bool CDGMapAdapter::Consume(void* const input, const uint32_t x, const uint32_t 
 
     for (auto i = 0; i < y; ++i) {
         for (auto j = 0; j < x; ++j) {
-            auto c = ((char** const)input)[i][j];
+            auto c = ((char **const) input)[i][j];
 
 #ifdef DEBUG
             std::cerr << c;
@@ -57,7 +64,8 @@ bool CDGMapAdapter::Consume(void* const input, const uint32_t x, const uint32_t 
                     break;
                 return false;
             case 'O':
-                this->_startPoint = new std::pair<uint32_t, uint32_t>(j, i);
+                this->_startPoint =
+                    new std::pair<uint32_t, uint32_t>(j, i);
                 break;
             default:
                 std::string s = "unexpected char ";
@@ -77,7 +85,7 @@ bool CDGMapAdapter::Consume(void* const input, const uint32_t x, const uint32_t 
     return true;
 }
 
-const std::pair<uint32_t, uint32_t>& CDGMapAdapter::StartPoint()
+const std::pair<uint32_t, uint32_t> &CDGMapAdapter::StartPoint()
 {
     return *this->_startPoint;
 }
