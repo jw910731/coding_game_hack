@@ -54,13 +54,15 @@ def get_header_string():
     res = []
     authors: dict = json.loads(open("authors.json", "r").read())
     for n in authors["member"]:
-        res.append(f"TPP2020-HW{authors['hw']}-{n['id']}{n['name']}")
+        res.append(
+            f"TPP2020-HW{authors['hw']}-{n['id']}{n['name']}")
     return res
 
 
 def scan_file(fn: str) -> list:
     lines = [
-        "", "/* -------------------------------------------------------------",
+        "",
+        "/* -------------------------------------------------------------",
         f"// {fn}",
         "// ----------------------------------------------------------- */"
     ]
@@ -70,8 +72,11 @@ def scan_file(fn: str) -> list:
 
 
 if __name__ == "__main__":
+    branch = subprocess.check_output(
+        ['git', 'rev-parse', '--abbrev-ref',
+         'HEAD']).decode().strip()
     target_code_files = subprocess.check_output(
-        ['git', 'ls-tree', '-r', 'master',
+        ['git', 'ls-tree', '-r', branch,
          '--name-only']).decode().splitlines()
     doc = docx.Document('tcc_template.docx')
     hs = get_header_style(doc)
