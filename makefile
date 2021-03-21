@@ -7,6 +7,9 @@ all:
 	cd code && make
 	python3 make_c.py
 	python3 auto_report.py
+	doc2pdf test.docx
+	mv test.pdf 40747039s.pdf
+	
 clean:
 	cd code && make clean
-	rm -rf test.docx Answer.cpp
+	rm -rf 40747039s.pdf Answer.cpp
