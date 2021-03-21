@@ -1,6 +1,7 @@
 import subprocess
 from os.path import exists
 import docx
+import json
 from docx.text.font import Font
 from docx.shared import Cm, Pt
 
@@ -49,6 +50,14 @@ def write_body(doc, lines: list, style: Font):
             run.font.size = style.size
 
 
+def get_header_string():
+    res = []
+    authors: dict = json.loads(open("authors.json", "r").read())
+    for n in authors["member"]:
+        res.append(f"TPP2020-HW{authors['hw']}-{n['id']}{n['name']}")
+    return res
+
+
 def scan_file(fn: str) -> list:
     lines = [
         "", "/* -------------------------------------------------------------",
@@ -69,8 +78,7 @@ if __name__ == "__main__":
     hs.size = Pt(10)
 
     bs = get_body_style(doc)
-    bs.size = Pt(6)
-    write_header(doc, ["test001", "test002", "物品"], hs)
+    write_header(doc, get_header_string(), hs)
 
     clear_body(doc)
     for file in target_code_files:

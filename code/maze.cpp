@@ -1,10 +1,10 @@
 #include "maze.h"
-#include <iostream>
 #include <memory.h>
+#include <iostream>
 
-Maze* Maze::_instatnce = nullptr;
+Maze *Maze::_instatnce = nullptr;
 
-Maze::Maze() { }
+Maze::Maze() {}
 
 Maze::~Maze()
 {
@@ -17,7 +17,7 @@ void Maze::initMap(const uint32_t x, const uint32_t y)
     this->_x = x;
     this->_y = y;
 
-    this->_mazeMap = new MazeStatus*[this->_y];
+    this->_mazeMap = new MazeStatus *[this->_y];
     for (auto i = 0; i < this->_y; i++) {
         _mazeMap[i] = new MazeStatus[this->_x];
         for (auto j = 0; j < this->_x; j++)
@@ -38,7 +38,7 @@ void Maze::removeMap()
     this->_y = 0;
 }
 
-Maze* Maze::GetInstance()
+Maze *Maze::GetInstance()
 {
     if (_instatnce == nullptr)
         _instatnce = new Maze();
@@ -46,7 +46,7 @@ Maze* Maze::GetInstance()
     return _instatnce;
 }
 
-Maze* Maze::GetInstance(const uint32_t x, const uint32_t y)
+Maze *Maze::GetInstance(const uint32_t x, const uint32_t y)
 {
     Maze::GetInstance();
     if (_instatnce->_x == x && _instatnce->_y == y)
@@ -56,7 +56,10 @@ Maze* Maze::GetInstance(const uint32_t x, const uint32_t y)
     return _instatnce;
 }
 
-bool Maze::Place(const uint32_t wx, const uint32_t wy, const MazeStatus it)
+bool Maze::Place(
+    const uint32_t wx,
+    const uint32_t wy,
+    const MazeStatus it)
 {
     if (wx < 0 || wx >= this->_x || wy < 0 || wy >= this->_y)
         return false;
@@ -88,7 +91,8 @@ void Maze::PrintAtLoc(const int x, const int y)
                     std::cerr << '.';
                 break;
             default:
-                throw "unexcpeted character " + this->_mazeMap[i][j];
+                throw "unexcpeted character " +
+                    this->_mazeMap[i][j];
                 break;
             }
         }
