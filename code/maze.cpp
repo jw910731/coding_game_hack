@@ -93,3 +93,7 @@ void Maze::PrintAtLoc(const int x, const int y)
             }
         }
 }
+const std::pair<uint32_t, uint32_t> Maze::GetSize()
+{
+    return std::make_pair(this->_x, this->_y);
+}

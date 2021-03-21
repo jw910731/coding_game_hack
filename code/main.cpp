@@ -5,8 +5,8 @@
 
 int main()
 {
-    int x, y;
-    int step;
+    int      x, y;
+    uint64_t step;
     std::cin >> x >> y;
     std::cin >> step;
 
@@ -22,10 +22,10 @@ int main()
         std::cin >> map[i];
     if (!maze_parser.Consume(map, x, y))
         throw "Consume failure";
-    CDGRobot robot;
-    auto     stp = maze_parser.StartPoint();
-    robot.Init(stp.first, stp.second, step, maze);
-    for (auto _ = 0; _ != step; ++_)
+    CDGDPRobot robot;
+    auto       stp = maze_parser.StartPoint();
+    robot.Init(stp.first, stp.second, &step, maze);
+    while (step > 0)
         robot.Walk();
 
     auto pos = robot.GetPos();

@@ -66,7 +66,7 @@ bool CDGMapAdapter::Consume(void* const input, const uint32_t x, const uint32_t 
             }
         }
 #ifdef DEBUG
-        std::cerr << '\n'
+        std::cerr << '\n';
 #endif
     }
 #ifdef DEBUG

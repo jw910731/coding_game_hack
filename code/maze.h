@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <utility>
 
 class Maze {
 public:
@@ -11,9 +12,10 @@ public:
     static Maze* GetInstance(const uint32_t x, const uint32_t y);
     static Maze* GetInstance();
 
-    bool Place(const uint32_t wx, const uint32_t wy, const MazeStatus it);
-    bool Walkable(const uint32_t wx, const uint32_t wy);
-    void PrintAtLoc(const int x, const int y);
+    bool                                Place(const uint32_t wx, const uint32_t wy, const MazeStatus it);
+    bool                                Walkable(const uint32_t wx, const uint32_t wy);
+    void                                PrintAtLoc(const int x, const int y);
+    const std::pair<uint32_t, uint32_t> GetSize();
     ~Maze();
 #pragma endregion
 private:
