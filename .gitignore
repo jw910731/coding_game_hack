@@ -1,6 +1,7 @@
 .vscode/*
 .vscode
 
+code/obj/**
 *.o
 Answer.cpp
 

@@ -1,23 +1,44 @@
-CC = g++
-CCFLAGS =
-OBJS = $(shell ls *.cpp|sed --expression='s/.cpp/.o/g')
-EXE = exe_bin
-NOSTRIP = 0
+CXX = g++
+OBJDIR:=$(shell [ -d obj ] || mkdir obj && echo "obj")
+CXXFLAGS+=-Wall -Wextra -std=c++17
+LDFLAGS=
+STRIP=1 
 
-ifeq ("$(DEBUG)","1")
-	CCFLAGS += -g -DDEBUG
-	NOSTRIP = 1
-endif
+TARGET = exe_bin
+OBJ= main.o detour.o maze.o robot.o mapAdapter.o
 
-%.o:%.cpp
-	$(CC) $(CCFLAGS) -c -o $@ $<
+.PHONY: all
 
-all:$(OBJS)
-	$(CC) $(OBJS) -o $(EXE)
-	if [ "$(NOSTRIP)" = "0" ]; then \
-		strip $(EXE); \
+all: CXXFLAGS += -O3
+all: STRIP=1
+all: $(TARGET) 
+
+debug: CXXFLAGS += -g -DDEBUG -fsanitize=leak -fsanitize=undefined
+debug: LDFLAGS += -fsanitize=address -lubsan -lasan 
+debug: STRIP=0
+debug: $(TARGET)
+
+dev: CXXFLAGS += -g -DDEBUG
+dev: STRIP=0
+dev: $(TARGET)
+
+finalize: $(TARGET)
+	if [ $(STRIP) = "1" ]; then \
+		strip $(TARGET); \
 	fi
-	cat $(EXE)|base64 > $(EXE).b64
+	cat $(TARGET)|base64 > $(TARGET).b64
+
+.SECONDEXPANSION:
+$(TARGET): $(patsubst %, $(OBJDIR)/%, $(OBJ))
+	$(CXX) $(filter %.o, $^) -o $@ $(LDFLAGS)
+
+$(OBJDIR)/%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+$(OBJDIR)/%.d: %.cpp
+	$(CXX) -MM $(CXXFLAGS) -o $@ $<
+
+include $(patsubst %.o, $(OBJDIR)/%.d, $(OBJ))
 
 clean:
-	rm -rf $(OBJS) $(EXE) $(EXE).b64
+	rm -rf $(TARGET) $(BUILD_DIR) obj
