@@ -9,7 +9,7 @@ OBJ= main.o detour.o maze.o robot.o mapAdapter.o
 
 .PHONY: all
 
-all: CXXFLAGS += -O3
+all: CXXFLAGS += -Osize
 all: STRIP=1
 all: $(TARGET) 
 
