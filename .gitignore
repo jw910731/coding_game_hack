@@ -10,3 +10,4 @@ code/exe_bin.b64
 *.pdf
 
 *.zip
+code/obj/**
