@@ -93,13 +93,13 @@ public:
 class chef
 {
 private:
-    kitchen cookhouse;
-    customer client;
-    player me, partner;
     int turnsRemaining;
 
 public:
     bool useOvenFlag;
+    kitchen cookhouse;
+    customer client;
+    player me, partner;
     std::string recipe;
     std::vector<std::string> chopList, ovenList, mergeList,
         lackList;
@@ -119,6 +119,7 @@ public:
     void oven();
     void merge();
     bool foodDelivery();
+    int getTurnsRemaining() const;
 };
 
 const int tool::d[8][2] = {{0, 1}, {0, -1}, {1, 0},  {-1, 0},
@@ -309,8 +310,10 @@ void chef::gameInit()
 void chef::roundInit()
 {
     std::cin >> turnsRemaining;
-    if (turnsRemaining <= 2)
+    if (turnsRemaining <= 2) {
         clearAll();
+        useOvenFlag = false;
+    }
     auto playerInit = [](player &inPlayer) {
         int x, y;
         std::string item;
@@ -636,6 +639,11 @@ void chef::merge()
         }
         action("USE", dishPosXY);
     }
+}
+
+int chef::getTurnsRemaining() const
+{
+    return turnsRemaining;
 }
 
 #endif
