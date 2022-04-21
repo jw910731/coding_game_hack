@@ -1,4 +1,4 @@
-CXX = g++
+CXX ?= g++
 OBJDIR:=$(shell [ -d obj ] || mkdir obj && echo "obj")
 CXXFLAGS+=-Wall -Wextra -std=c++17
 LDFLAGS=
@@ -9,7 +9,7 @@ OBJ= main.o detour.o maze.o robot.o mapAdapter.o
 
 .PHONY: all
 
-all: CXXFLAGS += -Osize
+all: CXXFLAGS += -O3
 all: STRIP=1
 all: $(TARGET) 
 
@@ -41,4 +41,4 @@ $(OBJDIR)/%.d: %.cpp
 include $(patsubst %.o, $(OBJDIR)/%.d, $(OBJ))
 
 clean:
-	rm -rf $(TARGET) $(BUILD_DIR) obj
+	rm -rf $(TARGET) $(BUILD_DIR) obj $(TARGET).b64
