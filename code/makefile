@@ -5,11 +5,11 @@ LDFLAGS=
 STRIP=1 
 
 TARGET = exe_bin
-OBJ= main.o detour.o maze.o robot.o mapAdapter.o
+OBJ= main.o Chef.o Func.o Kitchen.o
 
 .PHONY: all
 
-all: CXXFLAGS += -O3
+all: CXXFLAGS += -Osize
 all: STRIP=1
 all: $(TARGET) 
 
