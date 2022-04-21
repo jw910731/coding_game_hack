@@ -11,4 +11,4 @@ WORKDIR /build
 
 RUN mkdir /build/obj
 
-CMD ["make", "all"]
+CMD ["make", "finalize"]

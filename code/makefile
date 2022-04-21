@@ -9,7 +9,7 @@ OBJ = main.o
 
 .PHONY: all
 
-all: CXXFLAGS += -Osize
+all: CXXFLAGS += -Os
 all: STRIP=1
 all: $(TARGET) 
 
@@ -22,7 +22,7 @@ dev: CXXFLAGS += -g -DDEBUG
 dev: STRIP=0
 dev: $(TARGET)
 
-finalize: $(TARGET)
+finalize: all
 	if [ $(STRIP) = "1" ]; then \
 		strip $(TARGET); \
 	fi
