@@ -5,7 +5,7 @@ LDFLAGS=
 STRIP=1 
 
 TARGET = exe_bin
-OBJ= main.o detour.o maze.o robot.o mapAdapter.o
+OBJ = main.o
 
 .PHONY: all
 
