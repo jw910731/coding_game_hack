@@ -1,15 +1,15 @@
 CXX = g++
 OBJDIR:=$(shell [ -d obj ] || mkdir obj && echo "obj")
-CXXFLAGS+=-Wall -Wextra -std=c++17
-LDFLAGS=
+CXXFLAGS+=-Wall -Wextra -std=c++17 -fdata-sections -ffunction-sections
+LDFLAGS=-Wl,--gc-sections
 STRIP=1 
 
 TARGET = exe_bin
-OBJ= main.o detour.o maze.o robot.o mapAdapter.o
+OBJ= main.o
 
 .PHONY: all
 
-all: CXXFLAGS += -Osize
+all: CXXFLAGS += -Os -s
 all: STRIP=1
 all: $(TARGET) 
 
@@ -25,8 +25,10 @@ dev: $(TARGET)
 finalize: $(TARGET)
 	if [ $(STRIP) = "1" ]; then \
 		strip $(TARGET); \
+		objcopy -S $(TARGET); \
 	fi
-	cat $(TARGET)|base64 > $(TARGET).b64
+	brle -e $(TARGET) $(TARGET).rle
+	cat $(TARGET).rle | base64 > $(TARGET).b64
 
 .SECONDEXPANSION:
 $(TARGET): $(patsubst %, $(OBJDIR)/%, $(OBJ))
@@ -41,4 +43,4 @@ $(OBJDIR)/%.d: %.cpp
 include $(patsubst %.o, $(OBJDIR)/%.d, $(OBJ))
 
 clean:
-	rm -rf $(TARGET) $(BUILD_DIR) obj
+	rm -rf $(TARGET) $(BUILD_DIR) obj rust rust.b64

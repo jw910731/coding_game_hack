@@ -1,11 +1,29 @@
-#include <_types/_uint8_t.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <algorithm>
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <vector>
+// MIT License
+//
+// Copyright (c) 2021 PG1003
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
+#pragma once
 
 #include <algorithm>
 #include <cassert>
@@ -391,96 +409,3 @@ decode(InputIt input, InputIt last, OutputIt output) -> OutputIt
 }  // namespace brle
 
 }  // namespace pg
-
-static const std::string base64_chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    "abcdefghijklmnopqrstuvwxyz"
-    "0123456789+/";
-static inline bool is_base64(char c)
-{
-    return (isalnum(c) || (c == '+') || (c == '/'));
-}
-std::vector<unsigned char> base64_decode(
-    std::basic_string<unsigned char> const &encoded_string)
-{
-    int in_len = encoded_string.size();
-    int i = 0;
-    int j = 0;
-    int in_ = 0;
-    char char_array_4[4], char_array_3[3];
-    std::vector<unsigned char> ret;
-
-    while (in_len-- && (encoded_string[in_] != '=') &&
-           is_base64(encoded_string[in_])) {
-        char_array_4[i++] = encoded_string[in_];
-        in_++;
-        if (i == 4) {
-            for (i = 0; i < 4; i++)
-                char_array_4[i] =
-                    base64_chars.find(char_array_4[i]);
-
-            char_array_3[0] = (char_array_4[0] << 2) +
-                              ((char_array_4[1] & 0x30) >> 4);
-            char_array_3[1] = ((char_array_4[1] & 0xf) << 4) +
-                              ((char_array_4[2] & 0x3c) >> 2);
-            char_array_3[2] =
-                ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
-
-            for (i = 0; (i < 3); i++)
-                ret.push_back(char_array_3[i]);
-            i = 0;
-        }
-    }
-
-    if (i) {
-        for (j = i; j < 4; j++)
-            char_array_4[j] = 0;
-
-        for (j = 0; j < 4; j++)
-            char_array_4[j] = base64_chars.find(char_array_4[j]);
-
-        char_array_3[0] = (char_array_4[0] << 2) +
-                          ((char_array_4[1] & 0x30) >> 4);
-        char_array_3[1] = ((char_array_4[1] & 0xf) << 4) +
-                          ((char_array_4[2] & 0x3c) >> 2);
-        char_array_3[2] =
-            ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
-
-        for (j = 0; (j < i - 1); j++)
-            ret.push_back(char_array_3[j]);
-    }
-
-    return ret;
-}
-int main(int argc, char *argv[], char *envp[])
-{
-    int skip_bytes = 0xfaceb00c;
-    std::fstream ifs, ofs;
-    ifs.open(__FILE__, std::ios::in | std::ios::binary);
-    ofs.open("R_answer", std::ios::out | std::ios::binary);
-    ifs.seekg(skip_bytes);
-    std::basic_string<unsigned char> buffer(
-        (std::istreambuf_iterator<char>(ifs)),
-        std::istreambuf_iterator<char>());
-    buffer.erase(
-        std::remove(buffer.begin(), buffer.end(), '\n'),
-        buffer.end());
-    buffer = buffer.substr(0, buffer.size() - 2);
-    auto b64_dec = base64_decode(buffer);
-    std::vector<uint8_t> decode;
-    pg::brle::decode<
-        std::vector<unsigned char>::iterator,
-        std::vector<uint8_t>::iterator, uint8_t>(
-        b64_dec.begin(), b64_dec.end(), decode.begin());
-    std::copy(
-        decode.begin(), decode.end(),
-        std::ostreambuf_iterator<char>(ofs));
-    ifs.close();
-    ofs.close();
-    chmod(
-        "./R_answer",
-        S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-    execle("./R_answer", "R_answer", NULL, envp);
-    perror("[execve]");
-    return -1;
-}
